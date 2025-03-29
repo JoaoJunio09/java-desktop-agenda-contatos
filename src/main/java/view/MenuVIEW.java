@@ -4,6 +4,10 @@
  */
 package view;
 
+import java.awt.Dimension;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+
 /**
  *
  * @author Welinton
@@ -15,6 +19,15 @@ public class MenuVIEW extends javax.swing.JFrame {
      */
     public MenuVIEW() {
         initComponents();
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH); //
+    }
+    
+    private void centralizarJInternalFrame(JInternalFrame internalFrame) {
+        Dimension desktopSize = jDesktopPane.getSize(); // jDesktopPane é o nome do seu JDesktopPane
+        Dimension internalFrameSize = internalFrame.getSize();
+        int x = (desktopSize.width - internalFrameSize.width) / 2;
+        int y = (desktopSize.height - internalFrameSize.height) / 2;
+        internalFrame.setLocation(x, y);
     }
 
     /**
@@ -107,9 +120,18 @@ public class MenuVIEW extends javax.swing.JFrame {
     }//GEN-LAST:event_jMnConfigActionPerformed
 
     private void jMnItContatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItContatoActionPerformed
-        ContatoPesquisarVIEW contatoPesquisarVIEW = new ContatoPesquisarVIEW();
-        jDesktopPane.add(contatoPesquisarVIEW);
-        contatoPesquisarVIEW.setVisible(true);
+        for (JInternalFrame frame : jDesktopPane.getAllFrames()) {
+            if (frame instanceof PessoaPesquisarVIEW) {
+                frame.toFront(); // sobrepor caso tenha mais de uma tela aberta
+                frame.requestFocus(); // joga o foco para esta tela
+                return;
+            }
+        }
+        
+        PessoaPesquisarVIEW pessoaPesquisarView = new PessoaPesquisarVIEW();
+        jDesktopPane.add(pessoaPesquisarView);
+        pessoaPesquisarView.setVisible(true);
+        centralizarJInternalFrame(pessoaPesquisarView);
     }//GEN-LAST:event_jMnItContatoActionPerformed
 
     /**

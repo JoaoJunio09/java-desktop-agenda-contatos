@@ -4,18 +4,55 @@
  */
 package view;
 
+import controller.PessoaCTR;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.Pessoa;
+
 /**
  *
  * @author joaoj
  */
-public class ContatoPesquisarVIEW extends javax.swing.JInternalFrame {
+public class PessoaPesquisarVIEW extends javax.swing.JInternalFrame {
+    
+    private PessoaCTR pessoaCTR = new PessoaCTR();
 
     /**
      * Creates new form ContatoPesquisarVIEW
      */
-    public ContatoPesquisarVIEW() {
+    public PessoaPesquisarVIEW() {
         initComponents();
     }
+    
+    public void pesquisar() {
+        // 0 - Código, 1 - Nome, 2 - Todos
+        try {
+            List<Pessoa> pessoas;
+            int filtro = jCbxFiltro.getSelectedIndex();            
+            if (filtro == 0) {
+               int id = Integer.parseInt(jTxtFldPesquisar.getText());
+               pessoas = List.of(pessoaCTR.getById(id));
+            } 
+            else if (filtro == 1) {
+                pessoas = pessoaCTR.getByNome(jTxtFldPesquisar.getText());
+            } 
+            else {
+                pessoas = pessoaCTR.getAll();
+            }
+            
+            DefaultTableModel modelo = (DefaultTableModel) jTblContatos.getModel();
+            modelo.setRowCount(0);
+            
+            for (Pessoa p : pessoas) {
+                modelo.addRow(new Object[] {p.getId(), p.getNome(), (p.getCidade() != null) ? p.getCidade().getNome() : "Sem cidade" });
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao pesquisar: ");
+        }
+    }    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -46,7 +83,7 @@ public class ContatoPesquisarVIEW extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Digite para pesquisar");
 
-        jCbxFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos" }));
+        jCbxFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Código", "Nome", "Todos" }));
         jCbxFiltro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCbxFiltroActionPerformed(evt);
@@ -56,6 +93,11 @@ public class ContatoPesquisarVIEW extends javax.swing.JInternalFrame {
         jTxtFldPesquisar.setToolTipText("Digite para pesquisar");
 
         jBtnPesquisar.setText("Pesquisar");
+        jBtnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnPesquisarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -93,17 +135,17 @@ public class ContatoPesquisarVIEW extends javax.swing.JInternalFrame {
 
         jTblContatos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Cód", "Cód. Pessoa", "Tipo", "Contato"
+                "Código", "Nome", "Cidade"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -187,6 +229,10 @@ public class ContatoPesquisarVIEW extends javax.swing.JInternalFrame {
     private void jBtnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnExcluirActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jBtnExcluirActionPerformed
+
+    private void jBtnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnPesquisarActionPerformed
+        pesquisar();
+    }//GEN-LAST:event_jBtnPesquisarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

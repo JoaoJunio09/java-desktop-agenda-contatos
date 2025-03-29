@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import libs.Tipos.TipoContato;
+import model.Cidade;
 import model.Pessoa;
 import model.PessoaContato;
 
@@ -19,7 +20,7 @@ public class PessoaDao implements CRUD<Pessoa> {
     
     private final Connection conn;
     
-    public PessoaDao() throws SQLException {
+    public PessoaDao() {
         conn = ConnectionFactory.getConnection();
     }
 
@@ -217,11 +218,11 @@ public class PessoaDao implements CRUD<Pessoa> {
             stmtPessoa = conn.prepareStatement(sqlPessoa);
             stmtPessoa.setInt(1, id);
             rsPessoa = stmtPessoa.executeQuery();
-
+            
             if (rsPessoa.next()) {
                 Pessoa pessoa = new Pessoa();
-                pessoa.setId(id);
-                pessoa.getCidade().setId(rsPessoa.getInt("ID_CIDADE"));
+                pessoa.setId(id);               
+                pessoa.getCidade().setId((rsPessoa.getInt("ID_CIDADE")));
                 pessoa.setNome(rsPessoa.getString("NOME"));
                 pessoa.setApelido(rsPessoa.getString("APELIDO"));
                 pessoa.setEndereco(rsPessoa.getString("ENDERECO"));
@@ -261,7 +262,6 @@ public class PessoaDao implements CRUD<Pessoa> {
         }
     }
 
-    @Override
     public List<Pessoa> getAll() throws Exception {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -271,14 +271,27 @@ public class PessoaDao implements CRUD<Pessoa> {
 
         try {
             conn = ConnectionFactory.getConnection();
-            String sql = "SELECT * FROM PESSOA";
+            //String sql = "SELECT * FROM PESSOA";
+            String sql = """
+                         select P.*, C.NOME as NOME_CIDADE, E.SIGLA
+                         from PESSOA P
+                         left join CIDADE C on (P.ID_CIDADE = C.ID)
+                         join ESTADO E on (C.ID_ESTADO = E.ID);
+                         """;
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
                 Pessoa pessoa = new Pessoa();
                 pessoa.setId(rs.getInt("ID"));
-                pessoa.getCidade().setId(rs.getInt("ID_CIDADE"));
+
+                Cidade cidade = new Cidade();
+                cidade.setId(rs.getInt("ID_CIDADE"));
+                cidade.setNome(rs.getString("NOME_CIDADE"));
+                // pensar no estado
+                pessoa.setCidade(cidade);
+
+                pessoa.setCidade(cidade);
                 pessoa.setNome(rs.getString("NOME"));
                 pessoa.setApelido(rs.getString("APELIDO"));
                 pessoa.setEndereco(rs.getString("ENDERECO"));
@@ -292,6 +305,10 @@ public class PessoaDao implements CRUD<Pessoa> {
                 pessoas.add(pessoa);
             }
         } finally {
+            if (rs != null) {
+                rs.close();
+            }
+
             if (stmt != null) {
                 stmt.close();
             }
@@ -330,4 +347,7 @@ public class PessoaDao implements CRUD<Pessoa> {
         return contatos;
     }
 
+    public List<Pessoa> getByNome(String nome) {
+        return null;
+    }
 }

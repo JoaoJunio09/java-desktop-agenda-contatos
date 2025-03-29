@@ -5,7 +5,6 @@
 package controller;
 
 import dao.PessoaDao;
-import java.sql.SQLException;
 import java.util.List;
 import model.Pessoa;
 
@@ -17,7 +16,7 @@ public class PessoaCTR {
     
     private final PessoaDao dao;
     
-    public PessoaCTR() throws SQLException {
+    public PessoaCTR() {
         this.dao = new PessoaDao();
     }
     
@@ -35,5 +34,9 @@ public class PessoaCTR {
     
     public Pessoa getById(int id) throws Exception {
         return dao.getById(id);
+    }
+    
+    public List<Pessoa> getByNome(String nome) throws Exception {
+        return dao.getByNome(nome);
     }
 }

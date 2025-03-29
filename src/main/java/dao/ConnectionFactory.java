@@ -55,10 +55,15 @@ public class ConnectionFactory {
      * @return Objeto Connection
      * @throws SQLException Se ocorrer um erro ao conectar
      */
-    public static Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            connection = DriverManager.getConnection(url, user, password);
-            connection.setAutoCommit(false);
+    public static Connection getConnection() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                connection = DriverManager.getConnection(url, user, password);
+                connection.setAutoCommit(false);
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException("Erro ao iniciar conexão.", e);
         }
         return connection;
     }
