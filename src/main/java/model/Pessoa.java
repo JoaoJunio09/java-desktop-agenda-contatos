@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Pessoa {
     private int id;
-    private int idCidade;
+    private Cidade cidade;
     private String nome;
     private String apelido;
     private String endereco;
@@ -40,17 +40,17 @@ public class Pessoa {
     }
 
     /**
-     * @return the idCidade
+     * @return the cidade
      */
-    public int getIdCidade() {
-        return idCidade;
+    public Cidade getCidade() {
+        return cidade;
     }
 
     /**
-     * @param idCidade the idCidade to set
+     * @param cidade the idCidade to set
      */
-    public void setIdCidade(int idCidade) {
-        this.idCidade = idCidade;
+    public void setCidade(Cidade cidade) {
+        this.cidade = cidade;
     }
 
     /**

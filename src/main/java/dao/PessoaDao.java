@@ -41,14 +41,14 @@ public class PessoaDao implements CRUD<Pessoa> {
             else throw new Exception("Erro ao obter o ID da Pessoa");
             
             stmtPessoa.setInt(1, pessoa.getId());
-            stmtPessoa.setInt(2, pessoa.getIdCidade());
+            stmtPessoa.setInt(2, pessoa.getCidade().getId());
             stmtPessoa.setString(3, pessoa.getNome());
             stmtPessoa.setString(4, pessoa.getApelido());
             stmtPessoa.setString(5, pessoa.getEndereco());
             stmtPessoa.setString(6, pessoa.getNumero());
             stmtPessoa.setString(7, pessoa.getBairro());
             stmtPessoa.setString(8, pessoa.getCep());
-            stmtPessoa.executeUpdate();           
+            stmtPessoa.executeUpdate();          
 
             if (!pessoa.getContatos().isEmpty()) {
                 String sqlPessoaContato = "insert into PESSOA_CONTATO (ID, ID_PESSOA, TIPO, CONTATO) values (?, ?, ?, ?)";
@@ -106,7 +106,7 @@ public class PessoaDao implements CRUD<Pessoa> {
             String sqlPessoa = "UPDATE PESSOA SET ID_CIDADE=?, NOME=?, APELIDO=?, ENDERECO=?, NUMERO=?, BAIRRO=?, CEP=? WHERE ID=?";
             stmtPessoa = conn.prepareStatement(sqlPessoa);            
             stmtPessoa.setInt(1, pessoa.getId());
-            stmtPessoa.setInt(2, pessoa.getIdCidade());
+            stmtPessoa.setInt(2, pessoa.getCidade().getId());
             stmtPessoa.setString(3, pessoa.getNome());
             stmtPessoa.setString(4, pessoa.getApelido());
             stmtPessoa.setString(5, pessoa.getEndereco());
@@ -221,7 +221,7 @@ public class PessoaDao implements CRUD<Pessoa> {
             if (rsPessoa.next()) {
                 Pessoa pessoa = new Pessoa();
                 pessoa.setId(id);
-                pessoa.setIdCidade(rsPessoa.getInt("ID_CIDADE"));
+                pessoa.getCidade().setId(rsPessoa.getInt("ID_CIDADE"));
                 pessoa.setNome(rsPessoa.getString("NOME"));
                 pessoa.setApelido(rsPessoa.getString("APELIDO"));
                 pessoa.setEndereco(rsPessoa.getString("ENDERECO"));
@@ -278,7 +278,7 @@ public class PessoaDao implements CRUD<Pessoa> {
             while (rs.next()) {
                 Pessoa pessoa = new Pessoa();
                 pessoa.setId(rs.getInt("ID"));
-                pessoa.setIdCidade(rs.getInt("ID_CIDADE"));
+                pessoa.getCidade().setId(rs.getInt("ID_CIDADE"));
                 pessoa.setNome(rs.getString("NOME"));
                 pessoa.setApelido(rs.getString("APELIDO"));
                 pessoa.setEndereco(rs.getString("ENDERECO"));
